@@ -61,6 +61,7 @@ console.log(slugs);
         res.writeHead(200, {'Content-Type': 'text/html'});
         const product = dataObj[query.id];
         const output = replaceTemplate(tmpProduct,product);
+        url.replace(slugs);
         res.end(output);
 
         //API page
