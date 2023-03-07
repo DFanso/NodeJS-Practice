@@ -15,11 +15,29 @@ const writeFilePro = (file,data) =>{
         fs.writeFile(file, data, err =>{
             if (err) reject ('could not write file 😭');
             resolve('success');
-        })
+        });
     });
-}
+};
 
-readFilePro(`${__dirname}/dog.txt`)
+const getDogPic = async () =>{
+    try{
+        const data = await readFilePro(`${__dirname}/dog.txt`);
+    console.log(`Bread: ${data}`);
+
+    const res = await superagent.get(`https://dog.ceo/api/breed/${data}/images/random`);
+    console.log(res.body.message);
+
+    await writeFilePro('dog-image.txt',res.body.message);
+    console.log('Random dog image saved to file');
+
+    }catch(err) {
+        console.log(err);
+    }
+}
+getDogPic();
+
+
+/*readFilePro(`${__dirname}/dog.txt`)
     .then(data =>{
     console.log(`Bread: ${data}`);
     return superagent.get(`https://dog.ceo/api/breed/${data}/images/random`)
@@ -35,3 +53,6 @@ readFilePro(`${__dirname}/dog.txt`)
     .catch(err => {
         console.log(err.message);
     });
+    */
+
+
