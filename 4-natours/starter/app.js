@@ -111,6 +111,42 @@ const deleteTour =  (req, res) => {
     })
 }
 
+const getAllUser = (req, res) => {
+    res.status(500).json({
+        statusbar: 'error',
+        message: 'This route is not yet implemented'
+    });
+}
+
+const createUser = (req, res) => {
+    res.status(500).json({
+        statusbar: 'error',
+        message: 'This route is not yet implemented'
+    });
+}
+
+const getUser = (req, res) => {
+    res.status(500).json({
+        statusbar: 'error',
+        message: 'This route is not yet implemented'
+    });
+}
+
+const updateUser = (req, res) => {
+    res.status(500).json({
+        statusbar: 'error',
+        message: 'This route is not yet implemented'
+    });
+}
+
+const deleteUser = (req, res) => {
+    res.status(500).json({
+        statusbar: 'error',
+        message: 'This route is not yet implemented'
+    });
+}
+
+
 
 
 // app.get('/api/v1/tours',getAllTours);
@@ -120,16 +156,34 @@ const deleteTour =  (req, res) => {
 // app.delete('/api/v1/tours/:id', deleteTour);
 
 //(3) Routes
-app
-.route('/api/v1/tours')
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+app.use('/api/v1/tours',tourRouter);
+app.use('/api/v1/users',userRouter);
+
+tourRouter
+.route('/')
 .get(getAllTours)
 .post(createTour)
 
-app
-.route('/api/v1/tours/:id')
+tourRouter
+.route('/:id')
 .get(getTour)
 .patch(updateTour)
 .delete(deleteTour);
+
+userRouter
+.route('/')
+.get(getAllUser)
+.post(createUser)
+
+userRouter
+.route('/:id')
+.get(getUser)
+.patch(updateUser)
+.delete(deleteUser);
+
 
 //(4)Server 
 app.listen(port,()=>{
