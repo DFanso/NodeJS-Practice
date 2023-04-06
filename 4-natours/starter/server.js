@@ -15,6 +15,7 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
+    useUnifiedTopology: true, // Add this option to address the deprecation warning
   })
   .then(() => {
     // eslint-disable-next-line no-console
