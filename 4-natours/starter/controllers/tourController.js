@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel');
-const APIFeatures = require('../utils/apiFeatures');
+// eslint-disable-next-line import/no-useless-path-segments
+const APIFeatures = require('./../utils/apiFeatures');
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -10,7 +11,7 @@ exports.aliasTopTours = (req, res, next) => {
 
 exports.getAllTours = async (req, res) => {
   try {
-    //execute query
+    // EXECUTE QUERY
     const features = new APIFeatures(Tour.find(), req.query)
       .filter()
       .sort()
@@ -18,17 +19,17 @@ exports.getAllTours = async (req, res) => {
       .paginate();
     const tours = await features.query;
 
+    // SEND RESPONSE
     res.status(200).json({
       status: 'success',
       results: tours.length,
-      requestedAt: req.requestTime,
       data: {
         tours,
       },
     });
   } catch (err) {
     res.status(404).json({
-      status: 'Not Found',
+      status: 'fail',
       message: err,
     });
   }
@@ -144,6 +145,59 @@ exports.getTourStats = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'Not Found',
+      message: err,
+    });
+  }
+};
+
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year * 1; // 2021
+
+    const plan = await Tour.aggregate([
+      {
+        $unwind: '$startDates',
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numTourStarts: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+      {
+        $addFields: { month: '$_id' },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: { numTourStarts: -1 },
+      },
+      {
+        $limit: 12,
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        plan,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
       message: err,
     });
   }
